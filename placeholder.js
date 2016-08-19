@@ -52,7 +52,9 @@
   					setStyle(el, props[i]);
   				} else if (i === 'innerHTML') {
   					el.innerHTML = props[i];
-  				} else {
+  				} else if(i === 'className') {
+            el.className = props[i];
+          } else {
   					el.setAttribute(i, props[i]);
   				}
   			}
@@ -77,6 +79,7 @@
       insertBefore(el.parentNode, createElement('label', {
 				innerHTML: getPlaceholderFor(el),
         for: el.id || el.name || '',
+        className: '__placeholder',
         style: styles
 			}));
     };
