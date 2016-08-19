@@ -18,11 +18,19 @@
         z-index: 1;
         background-color: transparent;
       }
+
+      .__placeholded {
+        background-color: transparent;
+      }
+
+      .__placeholded-valued {
+        background-color: #FFF;
+      }
     </style>
   </head>
   <body>
     <div>
-      <input id="example01" class="oloko-bicho" type="text" placeholder="I have a placeholder!"><br>
+      <input id="example01" class="oloko-bicho" type="text" placeholder="I have a value!" value="I have a value"><br>
     </div>
     <div>
       <input id="example02" type="password" placeholder="Password placeholders!"><br>
@@ -31,7 +39,7 @@
       <input id="example01" type="text"><br>
     </div>
     <div>
-      <textarea id="example03" placeholder="Textareas too!"></textarea>
+      <textarea id="example03" placeholder="Textareas too!">OPA OPA OPA</textarea>
     </div>
 
     <script src="placeholder.js"></script>
