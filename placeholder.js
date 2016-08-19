@@ -3,41 +3,29 @@
   var mock = doc.createElement('input'),
       isEnabled = !('placeholder' in mock) && typeof mock.placeholder !== 'string'
 
-  if (!isEnabled) { console.log('executed');
-    var inputs = document.getElementsByTagName('input');
-        textareas = document.getElementsByTagName('textarea');
-
-    // function getStyle(el, prop) {
-    //   var strValue = '';
-    //   if (window.getComputedStyle) {
-    //     strValue = getComputedStyle(el).getPropertyValue(prop);
-    //   } else if (el.currentStyle) { // IE
-    //     try {
-    //       strValue = el.currentStyle[prop];
-    //     } catch (e) {}
-    //   }
-    //   return strValue;
-    // };
+  if (!isEnabled) {
+    var inputs = doc.getElementsByTagName('input');
+        textareas = doc.getElementsByTagName('textarea');
 
     function getAllStyles(el) {
-      if (!el) {return []}; // Element does not exist, empty list.
+      if (!el) {return []}; // ELEMENT DOES NOT EXIST, EMPTY LIST.
       var style, styleNode = {};
-      if (window.getComputedStyle) { /* Modern browsers */
-        style = window.getComputedStyle(el, null);
-        for (var i=0; i<style.length; i++) {
+      if (win.getComputedStyle) { // MODERN BROWSERS
+        style = win.getComputedStyle(el, null);
+        for (var i = 0; i < style.length; i++) {
           styleNode[style[i]] = style.getPropertyValue(style[i]);
         }
-      } else if (elem.currentStyle) { /* IE */
+      } else if (elem.currentStyle) { // IE
         style = elem.currentStyle;
         for (var name in style) {
           styleNode[name] = style[name];
         }
-      } else { /* Ancient browser..*/
+      } else { // ANCIENT BROWSER...
         style = elem.style;
-        for (var i=0; i<style.length; i++) {
+        for (var i = 0; i < style.length; i++) {
           styleNode[style[i]] = style[style[i]];
         }
-      } console.log(styleNode);
+      }
       return styleNode;
     }
 
@@ -57,7 +45,7 @@
   	};
 
     function createElement(tag, props) {
-  		var el = document.createElement(tag);
+  		var el = doc.createElement(tag);
   		for (var i in props) {
   			if (props.hasOwnProperty(i)) {
   				if (i === 'style') {
@@ -82,28 +70,42 @@
     }
 
     function drawPlaceholder(el) {
-      getAllStyles(el);
+      var styles = getAllStyles(el);
+      styles['position'] = 'absolute';
+      styles['z-index'] = 0;
 
       insertBefore(el.parentNode, createElement('label', {
 				innerHTML: getPlaceholderFor(el),
         for: el.id || el.name || '',
-        style: getAllStyles(el)
-        // style: {
-				// 	position: 'absolute',
-				// 	display: 'none',
-        //   display: 'block',
-				// 	margin: '0',
-				// 	padding: '0',
-				// 	cursor: 'text'
-				// }
+        style: styles
 			}));
     };
+
+    function checkPlaceholder(el) { console.log(el);
+			// if (elem.value) {
+      //   var nofocus = true;
+      //   if (event && event.type ){
+      //     nofocus = event.type === 'blur';
+      //   }
+      //   hidePlaceholder(event, nofocus);
+			// } else {
+			// 	showPlaceholder();
+			// }
+		}
 
     function polyfillElement(el) {
       if (el.hasAttribute('placeholder')) {
         drawPlaceholder(el);
+        checkPlaceholder(el);
 
-
+        // CREATE EVENTS FOR ELEMENTS
+        // addEvent(elem, 'keyup', checkPlaceholder);
+        // addEvent(elem, 'keyDown', checkPlaceholder);
+        // addEvent(elem, 'blur', checkPlaceholder);
+        // addEvent(elem, 'focus', hidePlaceholder);
+        // addEvent(elem, 'click', hidePlaceholder);
+        // addEvent(placeholder, 'click', hidePlaceholder);
+        // addEvent(win, 'resize', redrawPlaceholder);
       };
     };
 
@@ -118,13 +120,12 @@
       return all;
     };
 
-    document.placeholderPolyfill = function(elms) {
+    doc.placeholderPolyfill = function(elms) {
       each(elms || getElementsInDocument(), polyfillElement);
     };
 
-    // Run automatically
-    document.placeholderPolyfill();
-
+    // RUN AUTOMATICALLY
+    doc.placeholderPolyfill();
   }
 
 }(window, document));
