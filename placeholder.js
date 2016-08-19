@@ -84,7 +84,10 @@
 			}));
     };
 
-    function checkPlaceholder(el) { console.log(el);
+    function checkPlaceholder(el) {
+      if (el.value) { console.log('tem valor', el.style)
+        el.style.backgroundColor = '#FFF';
+      }
 			// if (elem.value) {
       //   var nofocus = true;
       //   if (event && event.type ){
@@ -100,6 +103,8 @@
       if (el.hasAttribute('placeholder')) {
         drawPlaceholder(el);
         checkPlaceholder(el);
+        el.className += ' __placeholded';
+        // el.style.backgroundColor = 'transparent';
 
         // CREATE EVENTS FOR ELEMENTS
         // addEvent(elem, 'keyup', checkPlaceholder);
