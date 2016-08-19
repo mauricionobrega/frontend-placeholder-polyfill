@@ -1,11 +1,45 @@
 (function(win, doc) {
 
   var mock = doc.createElement('input'),
-      isEnabled = 'placeholder' in mock && typeof mock.placeholder === 'string';
+      isEnabled = !('placeholder' in mock) && typeof mock.placeholder !== 'string'
 
-  if (isEnabled) { console.log('executed');
+  if (!isEnabled) { console.log('executed');
     var inputs = document.getElementsByTagName('input');
         textareas = document.getElementsByTagName('textarea');
+
+    // function getStyle(el, prop) {
+    //   var strValue = '';
+    //   if (window.getComputedStyle) {
+    //     strValue = getComputedStyle(el).getPropertyValue(prop);
+    //   } else if (el.currentStyle) { // IE
+    //     try {
+    //       strValue = el.currentStyle[prop];
+    //     } catch (e) {}
+    //   }
+    //   return strValue;
+    // };
+
+    function getAllStyles(el) {
+      if (!el) {return []}; // Element does not exist, empty list.
+      var style, styleNode = {};
+      if (window.getComputedStyle) { /* Modern browsers */
+        style = window.getComputedStyle(el, null);
+        for (var i=0; i<style.length; i++) {
+          styleNode[style[i]] = style.getPropertyValue(style[i]);
+        }
+      } else if (elem.currentStyle) { /* IE */
+        style = elem.currentStyle;
+        for (var name in style) {
+          styleNode[name] = style[name];
+        }
+      } else { /* Ancient browser..*/
+        style = elem.style;
+        for (var i=0; i<style.length; i++) {
+          styleNode[style[i]] = style[style[i]];
+        }
+      } console.log(styleNode);
+      return styleNode;
+    }
 
     function each(arr, func) {
 			var i = arr.length;
@@ -14,32 +48,32 @@
 			}
   	};
 
-  	function setStyle(elem, props) {
+  	function setStyle(el, props) {
   		for (var i in props) {
   			if (props.hasOwnProperty(i)) {
-  				elem.style[i] = props[i];
+  				el.style[i] = props[i];
   			}
   		}
   	};
 
     function createElement(tag, props) {
-  		var elem = document.createElement(tag);
+  		var el = document.createElement(tag);
   		for (var i in props) {
   			if (props.hasOwnProperty(i)) {
   				if (i === 'style') {
-  					setStyle(elem, props[i]);
+  					setStyle(el, props[i]);
   				} else if (i === 'innerHTML') {
-  					elem.innerHTML = props[i];
+  					el.innerHTML = props[i];
   				} else {
-  					elem.setAttribute(i, props[i]);
+  					el.setAttribute(i, props[i]);
   				}
   			}
   		}
-  		return elem;
+  		return el;
   	};
 
-    function getPlaceholderFor(elem) {
-  		return elem.getAttribute('placeholder') || (elem.attributes.placeholder && elem.attributes.placeholder.nodeValue) || '';
+    function getPlaceholderFor(el) {
+  		return el.getAttribute('placeholder') || (el.attributes.placeholder && el.attributes.placeholder.nodeValue) || '';
   	};
 
     function insertBefore(parentNode, placeholder) {
@@ -48,17 +82,20 @@
     }
 
     function drawPlaceholder(el) {
+      getAllStyles(el);
+
       insertBefore(el.parentNode, createElement('label', {
 				innerHTML: getPlaceholderFor(el),
         for: el.id || el.name || '',
-				style: {
-					position: 'absolute',
-					display: 'none',
-          display: 'block',
-					margin: '0',
-					padding: '0',
-					cursor: 'text'
-				}
+        style: getAllStyles(el)
+        // style: {
+				// 	position: 'absolute',
+				// 	display: 'none',
+        //   display: 'block',
+				// 	margin: '0',
+				// 	padding: '0',
+				// 	cursor: 'text'
+				// }
 			}));
     };
 
