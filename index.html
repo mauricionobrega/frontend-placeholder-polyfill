@@ -17,6 +17,7 @@
         border: 1px solid #000;
         z-index: 1;
         background-color: transparent;
+        color: #000;
       }
 
       .__placeholded {
@@ -25,6 +26,20 @@
 
       .__placeholded-valued {
         background-color: #FFF;
+      }
+
+      .__placeholder/*,
+      ::-webkit-input-placeholder,
+      :-moz-placeholder, ::-moz-placeholder,
+      :-ms-input-placeholder */{
+        color: #000;
+        text-security: none;
+        -webkit-text-security: none;
+        -mox-text-security: none;
+      }
+
+      .__placeholded-focus {
+        color: darkgrey;
       }
     </style>
   </head>

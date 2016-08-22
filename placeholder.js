@@ -1,12 +1,14 @@
 (function(win, doc) {
 
   var mock = doc.createElement('input'),
-      isEnabled = !('placeholder' in mock) && typeof mock.placeholder !== 'string';
+      isDisabled = !('placeholder' in mock) && typeof mock.placeholder !== 'string';
 
-  if (!isEnabled) {
+  if (isDisabled) {
     var inputs = doc.getElementsByTagName('input');
-        textareas = doc.getElementsByTagName('textarea');
+        textareas = doc.getElementsByTagName('textarea'),
+        disregardStylesForPlaceholder = 'text-security|color';
 
+    // POLLYFILL FOR MANIPULATE CLASSES ================================================================================
     var hasClass, addClass, removeClass;
     if ('classList' in doc.documentElement) {
       hasClass = function (el, className) { return el.classList.contains(className); };
@@ -28,7 +30,7 @@
 
     function getAllStyles(el) {
       if (!el) {return []}; // ELEMENT DOES NOT EXIST, EMPTY LIST.
-      var style, styleNode = {}, regex = new RegExp('text-security');
+      var style, styleNode = {}, regex = new RegExp(disregardStylesForPlaceholder);
       if (win.getComputedStyle) { // MODERN BROWSERS
         style = win.getComputedStyle(el, null);
         for (var i = 0; i < style.length; i++) {
@@ -124,13 +126,32 @@
       }));
     };
 
-    function checkPlaceholder(el) {
+    function checkPlaceholder(el, event) {
+      var placeholder = el.parentNode.querySelector('.__placeholder');
       if (el.value) {
+        removeClass(placeholder, '__placeholded-focus');
         if (!hasClass(el, '__placeholded-valued')) {
           addClass(el, '__placeholded-valued');
         }
       } else {
+        if (event && event.type !== 'blur') {
+          addClass(placeholder, '__placeholded-focus');
+        } else {
+          removeClass(placeholder, '__placeholded-focus');
+        }
         removeClass(el, '__placeholded-valued');
+      }
+    };
+
+    function hidePlaceholder(el, event) {
+      var placeholder = el.parentNode.querySelector('.__placeholder');
+      if (el.value) {
+        removeClass(placeholder, '__placeholded-focus');
+        if (!hasClass(el, '__placeholded-valued')) {
+          addClass(el, '__placeholded-valued');
+        }
+      } else {
+        addClass(placeholder, '__placeholded-focus');
       }
     };
 
@@ -144,13 +165,13 @@
         }
 
         // TESTING
-        el.placeholder = '';
+        // el.placeholder = '';
 
         // CREATE EVENTS FOR ELEMENTS
         addEvent(el, 'keyup', checkPlaceholder);
         addEvent(el, 'keyDown', checkPlaceholder);
         addEvent(el, 'blur', checkPlaceholder);
-        // addEvent(el, 'focus', hidePlaceholder);
+        addEvent(el, 'focus', hidePlaceholder);
         // addEvent(el, 'click', hidePlaceholder);
         // addEvent(placeholder, 'click', hidePlaceholder);
         // addEvent(win, 'resize', redrawPlaceholder);
