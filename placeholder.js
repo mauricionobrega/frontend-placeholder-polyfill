@@ -114,11 +114,17 @@
     };
 
     function drawPlaceholder(el) {
-      var styles = getAllStyles(el);
+      var styles = getAllStyles(el),
+          wrapper = el.parentNode,
+          oldLabel = wrapper.querySelector('.__placeholder');
       styles['position'] = 'absolute';
       styles['z-index'] = 0;
 
-      insertBefore(el.parentNode, createElement('label', {
+      if (oldLabel) {
+        wrapper.removeChild(oldLabel)
+      };
+
+      insertBefore(wrapper, createElement('label', {
         innerHTML: getPlaceholderFor(el),
         unselectable: 'on',
         for: el.id || el.name || '',
