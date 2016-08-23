@@ -33,9 +33,20 @@
       :-moz-placeholder, ::-moz-placeholder,
       :-ms-input-placeholder */{
         color: darkgrey;
+
+        /* DISABLE TEXT SECURITY */
         text-security: none;
+        -khtml-text-security: none;
         -webkit-text-security: none;
         -mox-text-security: none;
+        -moz-user-select: -moz-none;
+
+        /* DISABLE TEXT USER SELECT. See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/ AND http://stackoverflow.com/questions/69430/is-there-a-way-to-make-text-unselectable-on-an-html-page*/
+        user-select: none;
+        -khtml-user-select: none;
+        -webkit-user-select: none;
+        -mox-user-select: none;
+        -ms-user-select: none;
       }
 
       .__placeholded-focus {

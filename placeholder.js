@@ -6,7 +6,7 @@
   if (isDisabled) {
     var inputs = doc.getElementsByTagName('input');
         textareas = doc.getElementsByTagName('textarea'),
-        disregardStylesForPlaceholder = 'text-security|color';
+        disregardStylesForPlaceholder = 'text-security|color|user-select';
 
     // POLLYFILL FOR MANIPULATE CLASSES ================================================================================
     var hasClass, addClass, removeClass;
@@ -71,10 +71,10 @@
       }
     };
 
-    function each(arr, func) {
+    function each(arr, callback) {
       var i = arr.length;
       while (i--) {
-        func(arr[i]);
+        callback(arr[i]);
       }
     };
 
@@ -120,6 +120,7 @@
 
       insertBefore(el.parentNode, createElement('label', {
         innerHTML: getPlaceholderFor(el),
+        unselectable: 'on',
         for: el.id || el.name || '',
         className: '__placeholder',
         style: styles
