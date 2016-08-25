@@ -193,6 +193,11 @@
         addEvent(el, 'keyDown', checkPlaceholder);
         addEvent(el, 'blur', blurPlaceholder);
         addEvent(el, 'focus', hidePlaceholder);
+
+        if (el.type.toUpperCase() === 'TEXTAREA') {
+          addEvent(el, 'mouseup', drawPlaceholder);
+        };
+
         // addEvent(el, 'click', hidePlaceholder);
         // addEvent(placeholder, 'click', hidePlaceholder);
         // addEvent(win, 'resize', redrawPlaceholder);
