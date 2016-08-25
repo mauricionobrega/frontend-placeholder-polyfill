@@ -3,7 +3,7 @@
   var mock = doc.createElement('input'),
       isDisabled = !('placeholder' in mock) && typeof mock.placeholder !== 'string';
 
-  if (isDisabled) {
+  if (!isDisabled) {
     var inputs = doc.getElementsByTagName('input');
         textareas = doc.getElementsByTagName('textarea'),
         disregardStylesForPlaceholder = 'text-security|color|user-select';
@@ -116,7 +116,8 @@
     function drawPlaceholder(el) {
       var styles = getAllStyles(el),
           wrapper = el.parentNode,
-          oldLabel = wrapper.querySelector('.__placeholder');
+          oldLabel = wrapper.querySelector('.__placeholder'),
+          textLabel, label;
       styles['position'] = 'absolute';
       styles['z-index'] = 0;
 
@@ -124,41 +125,54 @@
         wrapper.removeChild(oldLabel)
       };
 
-      insertBefore(wrapper, createElement('label', {
+      textLabel = createElement('span', {
         innerHTML: getPlaceholderFor(el),
+        unselectable: 'on'
+      });
+
+      label = createElement('label', {
         unselectable: 'on',
         for: el.id || el.name || '',
         className: '__placeholder',
         style: styles
-      }));
+      });
+
+      insertBefore(label, textLabel);
+      insertBefore(wrapper, label);
+    };
+
+    function blurPlaceholder(el, event) {
+      removeClass(el, '__focus');
+      checkPlaceholder(el, event)
     };
 
     function checkPlaceholder(el, event) {
       var placeholder = el.parentNode.querySelector('.__placeholder');
       if (el.value) {
-        removeClass(placeholder, '__placeholded-focus');
-        if (!hasClass(el, '__placeholded-valued')) {
-          addClass(el, '__placeholded-valued');
+        removeClass(placeholder, '__focus');
+        if (!hasClass(el, '__valued')) {
+          addClass(el, '__valued');
         }
       } else {
         if (event && event.type !== 'blur') {
-          addClass(placeholder, '__placeholded-focus');
+          addClass(placeholder, '__focus');
         } else {
-          removeClass(placeholder, '__placeholded-focus');
+          removeClass(placeholder, '__focus');
         }
-        removeClass(el, '__placeholded-valued');
+        removeClass(el, '__valued');
       }
     };
 
     function hidePlaceholder(el, event) {
       var placeholder = el.parentNode.querySelector('.__placeholder');
+      addClass(el, '__focus');
       if (el.value) {
-        removeClass(placeholder, '__placeholded-focus');
-        if (!hasClass(el, '__placeholded-valued')) {
-          addClass(el, '__placeholded-valued');
+        removeClass(placeholder, '__focus');
+        if (!hasClass(el, '__valued')) {
+          addClass(el, '__valued');
         }
       } else {
-        addClass(placeholder, '__placeholded-focus');
+        addClass(placeholder, '__focus');
       }
     };
 
@@ -172,12 +186,12 @@
         }
 
         // TESTING
-        // el.placeholder = '';
+        el.placeholder = '';
 
         // CREATE EVENTS FOR ELEMENTS
         addEvent(el, 'keyup', checkPlaceholder);
         addEvent(el, 'keyDown', checkPlaceholder);
-        addEvent(el, 'blur', checkPlaceholder);
+        addEvent(el, 'blur', blurPlaceholder);
         addEvent(el, 'focus', hidePlaceholder);
         // addEvent(el, 'click', hidePlaceholder);
         // addEvent(placeholder, 'click', hidePlaceholder);
