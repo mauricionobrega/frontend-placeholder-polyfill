@@ -143,21 +143,19 @@
 
     function blurPlaceholder(el, event) {
       removeClass(el, '__focus');
+      removeClass(el.parentNode.querySelector('.__placeholder'), '__focus');
       checkPlaceholder(el, event)
     };
 
     function checkPlaceholder(el, event) {
       var placeholder = el.parentNode.querySelector('.__placeholder');
       if (el.value) {
-        removeClass(placeholder, '__focus');
         if (!hasClass(el, '__valued')) {
           addClass(el, '__valued');
         }
       } else {
         if (event && event.type !== 'blur') {
           addClass(placeholder, '__focus');
-        } else {
-          removeClass(placeholder, '__focus');
         }
         removeClass(el, '__valued');
       }
@@ -166,13 +164,11 @@
     function hidePlaceholder(el, event) {
       var placeholder = el.parentNode.querySelector('.__placeholder');
       addClass(el, '__focus');
+      addClass(placeholder, '__focus');
       if (el.value) {
-        removeClass(placeholder, '__focus');
         if (!hasClass(el, '__valued')) {
           addClass(el, '__valued');
         }
-      } else {
-        addClass(placeholder, '__focus');
       }
     };
 
