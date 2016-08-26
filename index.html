@@ -46,12 +46,26 @@
       }
 
       .__valued {
-        background-color: #FFF;
+        /*background-color: #FFF;*/
       }
 
-      label.__focus {
+      /*label.__focus {
         color: darkgrey;
+      }*/
+
+      label {
+        /*position: absolute !important;
+        font-size: 120% !important;
+        color: #607D8B !important;*/
+        transform-origin: 0 -150% !important;
+        transition: transform 300ms ease !important;
+        pointer-events: none !important;
       }
+      label.__focus {
+        transform: scale(0.6) !important;
+      }
+
+
     </style>
   </head>
   <body>
